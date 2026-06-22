@@ -1,0 +1,10 @@
+{
+  "name": "tyzharchitector",
+  "version": "1.0.0",
+  "description": "Тыжархитектор — карточный тренажёр «Диагноз и лекарство»: соло + хотсит, zero-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

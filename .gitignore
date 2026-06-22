@@ -1,0 +1,10 @@
+# Зависимостей нет (zero-build), но на всякий:
+node_modules/
+npm-debug.log*
+
+# ОС / редакторы
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
