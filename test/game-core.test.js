@@ -102,6 +102,26 @@ test('каждый симптом имеет непустой best и валид
   }
 });
 
+test('колода болезней расширена (>= 58 симптомов)', () => {
+  assert.ok(symptoms.length >= 58, `симптомов всего ${symptoms.length}`);
+});
+
+test('все best/alt/bad ссылаются на существующие лекарства', () => {
+  const ids = new Set(templates.map(t => t.id));
+  for (const s of symptoms) {
+    for (const id of [...s.best, ...s.alt, ...(s.bad || [])]) {
+      assert.ok(ids.has(id), `${s.id}: нет лекарства «${id}»`);
+    }
+  }
+});
+
+test('на каждой ловушке есть чем наказать оверинжиниринг (heavy-карта вне best)', () => {
+  for (const s of symptoms.filter(x => x.trap)) {
+    const hasHeavyPunish = templates.some(t => t.heavy && !s.best.includes(t.id));
+    assert.ok(hasHeavyPunish, `${s.id}: нет heavy-карты для штрафа −2`);
+  }
+});
+
 // ---------- НУДЖ (наводящая подсказка) ----------
 
 test('у каждого симптома есть нудж-подсказка', () => {

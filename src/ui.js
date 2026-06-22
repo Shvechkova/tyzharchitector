@@ -15,8 +15,11 @@ const GROUP_META = {
   'Границы':            { color: '#7d4bd1', emoji: '🔗' },
   'Безопасность':       { color: '#d2444a', emoji: '🔐' },
   'Процесс':            { color: '#d98324', emoji: '🏢' },
+  'Наблюдаемость':      { color: '#1f9bb3', emoji: '🔭' },
   'Стили архитектуры':  { color: '#4f57c4', emoji: '🏛' },
+  'DDD-стратегия':      { color: '#9b4dca', emoji: '🧩' },
   'Практики':           { color: '#2e9e57', emoji: '🛠' },
+  'Управление':         { color: '#b0563a', emoji: '📐' },
   'Сдержанность':       { color: '#b08400', emoji: '🪤' },
 };
 const groupMeta = g => GROUP_META[g] || { color: '#888', emoji: '🎴' };
