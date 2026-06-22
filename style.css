@@ -155,8 +155,21 @@ textarea { resize: vertical; }
 .fan-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .fan-head h3 { margin: 0; }
 .search { margin-left: auto; width: 220px; }
-.fan-group { margin-bottom: 16px; }
-.fan-group-title { font-size: 13px; color: var(--ink-dim); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .03em; }
+.fan-group { margin-bottom: 12px; border-top: 1px solid var(--line); }
+.fan-group:first-of-type { border-top: none; }
+.fan-group-title {
+  font-size: 13px; color: var(--ink-dim); font-weight: 700; padding: 10px 4px 8px;
+  text-transform: uppercase; letter-spacing: .03em; cursor: pointer; user-select: none;
+  list-style: none; display: flex; align-items: center; gap: 8px;
+}
+.fan-group-title::-webkit-details-marker { display: none; }
+.fan-group-title::before {
+  content: '▸'; color: var(--accent); font-size: 11px; transition: transform .15s; display: inline-block;
+}
+.fan-group[open] > .fan-group-title::before { transform: rotate(90deg); }
+.fan-group-title:hover { color: var(--ink); }
+.fan-count { margin-left: auto; font-size: 11px; color: var(--ink-dim); background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px; padding: 1px 8px; }
+.fan-group[open] > .fan-group-title { margin-bottom: 8px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 10px; }
 
 .tcard {

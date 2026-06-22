@@ -37,6 +37,7 @@ export class App {
     this.filter = '';
     this.screen = 'setup'; // 'setup' | 'game'
     this.timer = { sec: 0, handle: null };
+    this.collapsedGroups = new Set(); // свёрнутые группы колоды (запоминаем между перерисовками)
     this.renderSetup();
   }
 
@@ -399,8 +400,16 @@ export class App {
         (!f || t.name.toLowerCase().includes(f) || t.cures.toLowerCase().includes(f) || (t.detail || '').toLowerCase().includes(f)));
       if (!list.length) return;
       const gm = groupMeta(g);
-      const sec = el('div', 'fan-group');
-      sec.appendChild(el('div', 'fan-group-title', `${gm.emoji} ${esc(g)}`));
+      // сворачиваемая группа на нативном <details>; состояние помним в collapsedGroups.
+      // при активном поиске разворачиваем всё, чтобы найденное было видно.
+      const sec = el('details', 'fan-group');
+      sec.open = f ? true : !this.collapsedGroups.has(g);
+      const summary = el('summary', 'fan-group-title', `${gm.emoji} ${esc(g)} <span class="fan-count">${list.length}</span>`);
+      summary.style.setProperty('--accent', gm.color);
+      sec.appendChild(summary);
+      if (!f) sec.addEventListener('toggle', () => {
+        if (sec.open) this.collapsedGroups.delete(g); else this.collapsedGroups.add(g);
+      });
       const cards = el('div', 'cards');
       list.forEach(t => {
         const chosen = s.selected.includes(t.id);
