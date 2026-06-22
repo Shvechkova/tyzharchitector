@@ -365,10 +365,25 @@ export class App {
     return v;
   }
 
+  allGroups() { return [...new Set(templates.map(t => t.group))]; }
+
+  toggleAllGroups(s, btn) {
+    const groups = this.allGroups();
+    const allCollapsed = groups.every(g => this.collapsedGroups.has(g));
+    if (allCollapsed) this.collapsedGroups.clear();              // развернуть всё
+    else groups.forEach(g => this.collapsedGroups.add(g));        // свернуть всё
+    this.refilterFan(s);
+    if (btn) btn.textContent = this.collapsedGroups.size ? 'Развернуть всё' : 'Свернуть всё';
+  }
+
   renderFan(s) {
     const fan = el('section', 'fan');
     const head = el('div', 'fan-head');
     head.innerHTML = `<h3>🎴 Колода лекарств</h3>`;
+    const collapseBtn = el('button', 'btn btn-ghost collapse-all',
+      this.allGroups().every(g => this.collapsedGroups.has(g)) ? 'Развернуть всё' : 'Свернуть всё');
+    collapseBtn.addEventListener('click', () => this.toggleAllGroups(s, collapseBtn));
+    head.appendChild(collapseBtn);
     const search = el('input', 'search');
     search.placeholder = 'Поиск шаблона…';
     search.value = this.filter;

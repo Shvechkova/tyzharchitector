@@ -152,9 +152,10 @@ textarea { resize: vertical; }
 
 /* ===================== ВЕЕР ЛЕКАРСТВ ===================== */
 .fan { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
-.fan-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.fan-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .fan-head h3 { margin: 0; }
-.search { margin-left: auto; width: 220px; }
+.collapse-all { margin-left: auto; padding: 8px 12px; font-size: 13px; white-space: nowrap; }
+.search { width: 200px; }
 .fan-group { margin-bottom: 12px; border-top: 1px solid var(--line); }
 .fan-group:first-of-type { border-top: none; }
 .fan-group-title {
