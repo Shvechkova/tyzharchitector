@@ -4,7 +4,7 @@
 // subscribe) — не знает, локальная игра или сетевая. Никакой игровой логики здесь
 // нет, она вся в ядре; UI лишь отражает state и шлёт ходы.
 
-import { templates, symptoms, isHeavy, answerKey } from './game-core.js';
+import { templates, symptoms, isHeavy, answerKey, symptomHints } from './game-core.js';
 import { LocalTransport } from './transport-local.js';
 import { rulesHTML } from './rules.js';
 
@@ -290,14 +290,19 @@ export class App {
     }
 
     const sym = symptomFull(s.currentSymptom);
+    const nudge = symptomHints[sym.id];
     const symCard = el('div', `symptom ${sym.trap ? 'is-trap' : ''}`);
     symCard.innerHTML = `
+      ${s.phase === 'play' && nudge ? '<button class="sym-help" aria-label="Подсказка">💡 подсказка</button>' : ''}
       <div class="sym-cat">${esc(sym.cat)} · ${sym.id}</div>
       <h2 class="sym-title">${esc(sym.title)}</h2>
       <p class="sym-text">${esc(sym.text)}</p>
       ${sym.combo ? `<div class="sym-flag combo">🔗 лечится связкой карт</div>` : ''}
       ${sym.trap ? `<div class="sym-flag trap">🪤 возможно, лучшее лекарство — НЕ усложнять</div>` : ''}
     `;
+    const symHelp = symCard.querySelector('.sym-help');
+    // нудж: наводящий вопрос, НЕ раскрывающий ответ
+    if (symHelp) symHelp.addEventListener('click', (e) => this.openHint(e, '💡 Наводящий вопрос', nudge));
     stage.appendChild(symCard);
 
     // выбранные карты

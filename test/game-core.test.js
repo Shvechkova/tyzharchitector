@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import {
   scorePlay, answerKey, createGame, reduce, isOver, winners, shuffle,
 } from '../src/game-core.js';
-import { symptomById } from '../src/cards.js';
+import { symptomById, symptoms, symptomHints, templates } from '../src/cards.js';
 import { LocalTransport } from '../src/transport-local.js';
 
 const S = id => symptomById[id];
@@ -99,6 +99,24 @@ test('каждый симптом имеет непустой best и валид
   for (const id of Object.keys(symptomById)) {
     const s = symptomById[id];
     assert.ok(Array.isArray(s.best) && s.best.length > 0, `${id}: best пуст`);
+  }
+});
+
+// ---------- НУДЖ (наводящая подсказка) ----------
+
+test('у каждого симптома есть нудж-подсказка', () => {
+  for (const s of symptoms) {
+    assert.ok((symptomHints[s.id] || '').length > 20, `${s.id}: нет нуджа`);
+  }
+});
+
+test('нудж не раскрывает ответ (не называет best/alt лекарство)', () => {
+  for (const s of symptoms) {
+    const hint = (symptomHints[s.id] || '').toLowerCase();
+    for (const id of [...s.best, ...s.alt]) {
+      const t = templates.find(x => x.id === id);
+      if (t) assert.ok(!hint.includes(t.name.toLowerCase()), `${s.id}: нудж палит «${t.name}»`);
+    }
   }
 });
 

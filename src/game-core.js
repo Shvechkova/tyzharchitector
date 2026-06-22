@@ -9,7 +9,7 @@
 // Тот же reduce крутится и локально, и на сервере — состояние всегда выводимо
 // из последовательности ходов.
 
-import { templates, symptoms, templateById, symptomById } from './cards.js';
+import { templates, symptoms, templateById, symptomById, symptomHints } from './cards.js';
 
 // --- утилиты ---
 
@@ -212,4 +212,4 @@ function clone(state) {
 }
 
 // Реэкспорт данных для удобства потребителей ядра.
-export { templates, symptoms, templateById, symptomById };
+export { templates, symptoms, templateById, symptomById, symptomHints };
