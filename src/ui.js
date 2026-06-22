@@ -12,6 +12,7 @@ import { rulesHTML } from './rules.js';
 const GROUP_META = {
   'Устойчивость':       { color: '#0f9b8e', emoji: '🛡' },
   'Данные / связь':     { color: '#2f6fdb', emoji: '🗄' },
+  'Связь и протоколы':  { color: '#2a8c9e', emoji: '📡' },
   'Границы':            { color: '#7d4bd1', emoji: '🔗' },
   'Безопасность':       { color: '#d2444a', emoji: '🔐' },
   'Процесс':            { color: '#d98324', emoji: '🏢' },
