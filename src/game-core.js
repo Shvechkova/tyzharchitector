@@ -80,6 +80,7 @@ export function answerKey(symptom) {
     alt: names(symptom.alt),
     bad: names(symptom.bad || []),
     note: symptom.note || '',
+    why: symptom.why || '',
     combo: !!symptom.combo,
     trap: !!symptom.trap,
   };

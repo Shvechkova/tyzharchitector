@@ -104,6 +104,7 @@ export class App {
             ${k.bad.length ? `&nbsp; <span class="key-tag warn">⚠️</span> ${k.bad.map(esc).join(', ')}` : ''}
           </div>
           <div class="ref-note">${esc(k.note)}</div>
+          ${k.why ? `<details class="ref-why"><summary>В чём суть</summary><p>${esc(k.why)}</p></details>` : ''}
         `;
         wrap.appendChild(item);
       });
@@ -313,6 +314,7 @@ export class App {
         ${r.key.bad.length ? `<div class="key-row"><span class="key-tag warn">⚠️ соблазн</span> ${r.key.bad.map(esc).join(', ')}</div>` : ''}
         <div class="key-note">${esc(r.key.note)}</div>
       </div>
+      ${r.key.why ? `<details class="why" open><summary>В чём суть</summary><p>${esc(r.key.why)}</p></details>` : ''}
     `;
     return v;
   }
@@ -349,7 +351,7 @@ export class App {
     const groups = [...new Set(templates.map(t => t.group))];
     groups.forEach(g => {
       const list = templates.filter(t => t.group === g &&
-        (!f || t.name.toLowerCase().includes(f) || t.cures.toLowerCase().includes(f)));
+        (!f || t.name.toLowerCase().includes(f) || t.cures.toLowerCase().includes(f) || (t.detail || '').toLowerCase().includes(f)));
       if (!list.length) return;
       const gm = groupMeta(g);
       const sec = el('div', 'fan-group');
@@ -359,9 +361,11 @@ export class App {
         const chosen = s.selected.includes(t.id);
         const c = el('button', `tcard ${chosen ? 'chosen' : ''} ${t.restraint ? 'restraint' : ''} ${isHeavy(t.id) ? 'heavy' : ''}`);
         c.style.setProperty('--accent', gm.color);
+        if (t.detail) c.title = t.detail; // полный текст по наведению
         c.innerHTML = `
           <span class="tcard-name">${esc(t.name)}</span>
           <span class="tcard-cures">${esc(t.cures)}</span>
+          ${t.detail ? `<span class="tcard-detail">${esc(t.detail)}</span>` : ''}
           <span class="tcard-cost">цена: ${esc(t.cost)}</span>
         `;
         if (interactive) c.addEventListener('click', () => this.move({ type: 'toggle', cardId: t.id }));

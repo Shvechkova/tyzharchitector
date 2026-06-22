@@ -129,6 +129,11 @@ textarea { resize: vertical; }
 .key-tag.alt { background: #20364a; color: #82b4ff; }
 .key-tag.warn { background: #4a2710; color: #ffb066; }
 .key-note { color: var(--ink-dim); margin-top: 4px; font-style: italic; }
+.why { margin-top: 12px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 8px; }
+.why > summary { cursor: pointer; font-weight: 700; font-size: 13px; color: var(--ink); list-style: none; }
+.why > summary::before { content: '🔎 '; }
+.why[open] > summary { margin-bottom: 6px; }
+.why p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink); }
 
 /* ===================== ВЕЕР ЛЕКАРСТВ ===================== */
 .fan { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
@@ -153,7 +158,13 @@ textarea { resize: vertical; }
 .tcard.heavy .tcard-name::after { content: " ⚖"; color: var(--warn); font-size: 12px; }
 .tcard-name { font-weight: 700; }
 .tcard-cures { font-size: 12.5px; color: var(--ink); }
-.tcard-cost { font-size: 11.5px; color: var(--ink-dim); margin-top: auto; }
+.tcard-detail {
+  font-size: 11.5px; color: var(--ink-dim); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.tcard:hover .tcard-detail { -webkit-line-clamp: unset; }
+.tcard-cost { font-size: 11.5px; color: var(--gold); opacity: .85; margin-top: auto; }
+.tcard { min-height: 132px; }
 
 /* ===================== ИСТОРИЯ ===================== */
 .history { margin-top: 18px; }
@@ -223,3 +234,6 @@ textarea { resize: vertical; }
 .ref-key { font-size: 13.5px; margin: 6px 0 2px; }
 .ref-key .key-tag { padding: 1px 7px; }
 .ref-note { font-size: 12.5px; color: var(--ink-dim); font-style: italic; }
+.ref-why { margin-top: 6px; }
+.ref-why > summary { cursor: pointer; font-size: 12.5px; font-weight: 600; color: #87b6ff; }
+.ref-why p { margin: 6px 0 0; font-size: 13px; line-height: 1.55; color: var(--ink); }
