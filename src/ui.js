@@ -197,7 +197,6 @@ export class App {
         <button id="rules" class="btn btn-ghost">📖 Правила</button>
         <button id="ref" class="btn btn-ghost">🔑 Справочник-ключ</button>
       </div>
-      <p class="hint">🌐 Мультиплеер со скрытыми руками — Этап 2 (см. README). Сейчас доступны соло и хотсит.</p>
     `;
     this.root.appendChild(wrap);
 
