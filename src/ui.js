@@ -52,6 +52,42 @@ export class App {
 
   move(m) { this.transport.applyMove(m); }
 
+  // --- поповер-подсказка (по «?»; лёгкая, не модалка) ---
+  openHint(ev, title, text) {
+    this.closeHint();
+    if (!text) return;
+    const pop = el('div', 'popover');
+    pop.id = 'popover';
+    pop.innerHTML = `<div class="pop-title">${esc(title)}</div><p class="pop-text">${esc(text)}</p>`;
+    document.body.appendChild(pop);
+
+    // позиционируем у места клика, поджимая к краям экрана
+    const pad = 10;
+    const w = pop.offsetWidth, h = pop.offsetHeight;
+    let x = (ev.clientX || 0) + 12;
+    let y = (ev.clientY || 0) + 12;
+    if (x + w + pad > window.innerWidth) x = window.innerWidth - w - pad;
+    if (y + h + pad > window.innerHeight) y = (ev.clientY || 0) - h - 12;
+    pop.style.left = Math.max(pad, x) + 'px';
+    pop.style.top = Math.max(pad, y) + 'px';
+
+    // закрытие по клику вне / Esc / скроллу
+    this._hintClose = (e) => { if (!pop.contains(e.target)) this.closeHint(); };
+    this._hintEsc = (e) => { if (e.key === 'Escape') this.closeHint(); };
+    setTimeout(() => {
+      document.addEventListener('mousedown', this._hintClose, true);
+      document.addEventListener('keydown', this._hintEsc, true);
+      window.addEventListener('scroll', this._hintScroll = () => this.closeHint(), true);
+    }, 0);
+  }
+  closeHint() {
+    const p = document.getElementById('popover');
+    if (p) p.remove();
+    if (this._hintClose) { document.removeEventListener('mousedown', this._hintClose, true); this._hintClose = null; }
+    if (this._hintEsc) { document.removeEventListener('keydown', this._hintEsc, true); this._hintEsc = null; }
+    if (this._hintScroll) { window.removeEventListener('scroll', this._hintScroll, true); this._hintScroll = null; }
+  }
+
   // --- модальные окна (правила и справочник-ключ лежат прямо в игре) ---
   openModal(title, contentNode) {
     this.closeModal();
@@ -189,6 +225,7 @@ export class App {
 
   // ===================== ЭКРАН ИГРЫ =====================
   renderGame() {
+    this.closeHint();
     const s = this.transport.getState();
     this.root.innerHTML = '';
     const app = el('div', 'game');
@@ -314,8 +351,12 @@ export class App {
         ${r.key.bad.length ? `<div class="key-row"><span class="key-tag warn">⚠️ соблазн</span> ${r.key.bad.map(esc).join(', ')}</div>` : ''}
         <div class="key-note">${esc(r.key.note)}</div>
       </div>
-      ${r.key.why ? `<details class="why" open><summary>В чём суть</summary><p>${esc(r.key.why)}</p></details>` : ''}
     `;
+    if (r.key.why) {
+      const hint = el('button', 'hint-btn', '🔎 В чём суть');
+      hint.addEventListener('click', (e) => this.openHint(e, 'В чём суть', r.key.why));
+      v.appendChild(hint);
+    }
     return v;
   }
 
@@ -359,17 +400,27 @@ export class App {
       const cards = el('div', 'cards');
       list.forEach(t => {
         const chosen = s.selected.includes(t.id);
-        const c = el('button', `tcard ${chosen ? 'chosen' : ''} ${t.restraint ? 'restraint' : ''} ${isHeavy(t.id) ? 'heavy' : ''}`);
+        // div, а не button: внутрь кладём вложенную кнопку «?» (button-в-button невалидно)
+        const c = el('div', `tcard ${chosen ? 'chosen' : ''} ${t.restraint ? 'restraint' : ''} ${isHeavy(t.id) ? 'heavy' : ''} ${interactive ? '' : 'locked'}`);
         c.style.setProperty('--accent', gm.color);
-        if (t.detail) c.title = t.detail; // полный текст по наведению
+        c.setAttribute('role', 'button');
+        c.tabIndex = interactive ? 0 : -1;
         c.innerHTML = `
+          ${t.detail ? '<button class="tcard-help" aria-label="Подробнее" title="Подробнее">?</button>' : ''}
           <span class="tcard-name">${esc(t.name)}</span>
           <span class="tcard-cures">${esc(t.cures)}</span>
-          ${t.detail ? `<span class="tcard-detail">${esc(t.detail)}</span>` : ''}
           <span class="tcard-cost">цена: ${esc(t.cost)}</span>
         `;
-        if (interactive) c.addEventListener('click', () => this.move({ type: 'toggle', cardId: t.id }));
-        else c.disabled = true;
+        // «?» — показать подробности, НЕ выбирая карту (в любой фазе)
+        const help = c.querySelector('.tcard-help');
+        if (help) help.addEventListener('click', (e) => { e.stopPropagation(); this.openHint(e, t.name, t.detail); });
+        // выбор карты — клик/Enter по телу (только в фазе игры)
+        if (interactive) {
+          c.addEventListener('click', () => this.move({ type: 'toggle', cardId: t.id }));
+          c.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.move({ type: 'toggle', cardId: t.id }); }
+          });
+        }
         cards.appendChild(c);
       });
       sec.appendChild(cards);

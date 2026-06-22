@@ -129,11 +129,20 @@ textarea { resize: vertical; }
 .key-tag.alt { background: #20364a; color: #82b4ff; }
 .key-tag.warn { background: #4a2710; color: #ffb066; }
 .key-note { color: var(--ink-dim); margin-top: 4px; font-style: italic; }
-.why { margin-top: 12px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 8px; }
-.why > summary { cursor: pointer; font-weight: 700; font-size: 13px; color: var(--ink); list-style: none; }
-.why > summary::before { content: '🔎 '; }
-.why[open] > summary { margin-bottom: 6px; }
-.why p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink); }
+.hint-btn {
+  margin-top: 12px; font: 600 13px inherit; cursor: pointer; color: #87b6ff;
+  background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; transition: .12s;
+}
+.hint-btn:hover { border-color: var(--accent); background: rgba(79,140,255,.1); }
+
+/* ===================== ПОПОВЕР-ПОДСКАЗКА ===================== */
+.popover {
+  position: fixed; z-index: 80; max-width: 320px;
+  background: var(--panel); border: 1px solid var(--accent); border-radius: 12px;
+  padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+.pop-title { font-weight: 700; margin-bottom: 6px; }
+.pop-text { margin: 0; font-size: 13px; line-height: 1.55; color: var(--ink); }
 
 /* ===================== ВЕЕР ЛЕКАРСТВ ===================== */
 .fan { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
@@ -145,26 +154,27 @@ textarea { resize: vertical; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 10px; }
 
 .tcard {
-  text-align: left; cursor: pointer; font: inherit; color: var(--ink);
+  position: relative; text-align: left; cursor: pointer; font: inherit; color: var(--ink);
   background: var(--bg-soft); border: 1px solid var(--line); border-top: 3px solid var(--accent, #888);
   border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 5px;
-  transition: .12s; min-height: 96px;
+  transition: .12s; min-height: 100px;
 }
-.tcard { border-top-color: var(--accent); }
-.tcard:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow); }
-.tcard:disabled { opacity: .55; cursor: default; }
+.tcard:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow); }
+.tcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tcard.locked { cursor: default; }
+.tcard.locked:hover { transform: none; border-color: var(--line); box-shadow: none; }
 .tcard.chosen { outline: 2px solid var(--accent); background: #17263f; }
 .tcard.restraint { border-top-color: var(--gold); }
 .tcard.heavy .tcard-name::after { content: " ⚖"; color: var(--warn); font-size: 12px; }
-.tcard-name { font-weight: 700; }
+.tcard-name { font-weight: 700; padding-right: 22px; }
 .tcard-cures { font-size: 12.5px; color: var(--ink); }
-.tcard-detail {
-  font-size: 11.5px; color: var(--ink-dim); line-height: 1.4;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-}
-.tcard:hover .tcard-detail { -webkit-line-clamp: unset; }
 .tcard-cost { font-size: 11.5px; color: var(--gold); opacity: .85; margin-top: auto; }
-.tcard { min-height: 132px; }
+.tcard-help {
+  position: absolute; top: 7px; right: 7px; width: 20px; height: 20px; padding: 0;
+  border-radius: 50%; border: 1px solid var(--line); background: var(--panel-2);
+  color: var(--ink-dim); font: 700 12px/1 inherit; cursor: pointer; transition: .12s;
+}
+.tcard-help:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* ===================== ИСТОРИЯ ===================== */
 .history { margin-top: 18px; }
