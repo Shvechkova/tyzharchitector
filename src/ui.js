@@ -238,6 +238,7 @@ export class App {
 
     if (s.phase === 'over') {
       app.appendChild(this.renderOver(s));
+      if (s.history.length) app.appendChild(this.renderHistory(s));
       this.resetTimer(false);
       this.root.appendChild(app);
       return;
